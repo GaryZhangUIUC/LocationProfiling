@@ -1,16 +1,16 @@
 #!/usr/bin/ruby
-
+require "tweet_words"
 class Tweet
   attr_reader :t_id
-  attr_reader :user
+  attr_reader :u_id
   attr_reader :created_at
   attr_reader :gps
   attr_reader :text
   attr_reader :weighted_keywords
   attr_reader :keyword_size
-  def initialize(t_id, user, created_at, gps)
+  def initialize(t_id, u_id, text, gps, created_at)
     @t_id = t_id
-    @user = user
+    @u_id = u_id
     @created_at = created_at
     @gps = gps
     @text = text
@@ -19,7 +19,7 @@ class Tweet
     generate_keywords()
   end
   def generate_keywords()
-    @text
+    keywords = TweetWords.clean_up(@text)
     @weighted_keywords = {}
     @keyword_size = 0
     keywords.each do |keyword|

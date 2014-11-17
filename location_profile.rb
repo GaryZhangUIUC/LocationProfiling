@@ -6,12 +6,13 @@ class LocationProfile
   attr_reader :gps
   attr_accessor :weighted_keywords
   attr_accessor :weighted_tweets
-  def initialize(l_id, l_name, gps, weighted_keywords, weighted_tweets)
+  def initialize(l_id, l_name, gps)
     @l_id = l_id
     @l_name = l_name
     @gps = gps
     @weighted_keywords = weighted_keywords
     @weighted_tweets = weighted_tweets
+
   end
   def get_keyword_sim(target)
     sim = 0
