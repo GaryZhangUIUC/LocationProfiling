@@ -27,7 +27,11 @@ class LocationProfile
   end
   def get_distance_sim(target, alpha, beta)
     dist = gps.get_distance_from(target.gps)
-    sim = alpha - 1.0 / (beta - dist)
+    if dist < beta - 1.0 / alpha
+      sim = alpha - 1.0 / (beta - dist)
+    else
+      sim = 0
+    end
     sim
   end
 end
