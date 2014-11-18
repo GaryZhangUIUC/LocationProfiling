@@ -4,14 +4,16 @@ require_relative './tfidf'
 require_relative './tweet'
 require_relative './gps'
 require_relative './location_profile'
+require_relative './stat'
 include DB
+include Stat
 require 'pp'
 
 module EMFramework
-  DIST_ALPHA = 1.0
-  DIST_BETA = 1000.0
-  DIST_WEIGHT = 0.5
-  KEYWORD_WEIGHT = 0.5
+  DISTSIM_DIST_LIMIT = 1000.0
+  DISTSIM_SIM_LIMIT = 1.0
+  DIST_WEIGHT = 0.05
+  KEYWORD_WEIGHT = 1
   def get_locations(center, l_radius)
     locations = get_locations_by_distance(center, l_radius)
     locations
@@ -30,7 +32,7 @@ module EMFramework
     update_location(locations)
   end
   
-  def bind_tweets(tweets, loc_set, dist_weight=DIST_WEIGHT, keyword_weight=KEYWORD_WEIGHT)
+  def bind_tweets(dist_sim_array, keyword_sim_array, tweets, loc_set, dist_weight=DIST_WEIGHT, keyword_weight=KEYWORD_WEIGHT)
     loc_set.each do |location|
       location.weighted_tweets = []
     end
@@ -39,7 +41,9 @@ module EMFramework
       max_loc = nil
       loc_set.each do |location|
         keyword_sim = location.get_keyword_sim(tweet)
-        dist_sim = location.get_distance_sim(tweet, DIST_ALPHA, DIST_BETA)
+        dist_sim = location.get_distance_sim(tweet, DISTSIM_DIST_LIMIT, DISTSIM_SIM_LIMIT)
+        dist_sim_array.push(dist_sim * dist_weight)
+        keyword_sim_array.push(keyword_sim * keyword_weight)
         sim = keyword_sim * keyword_weight + dist_sim * dist_weight
         if sim > max_sim
           max_sim = sim
@@ -60,12 +64,22 @@ module EMFramework
     loc_set
   end
   def run(center, l_radius, t_radius, num_iter)
+    dist_sim_array = []
+    keyword_sim_array = []
     locations = init_lcoations(center, t_radius, l_radius)
     tweets = get_tweets(center, t_radius)
     for iter_num in 1..num_iter
-      locations = bind_tweets(tweets, locations)
+      locations = bind_tweets(dist_sim_array, keyword_sim_array, tweets, locations)
       locations = update_location(locations)
     end
+    dist_mean = Stat.mean(dist_sim_array)
+    dist_sd = Stat.standard_deviation(dist_sim_array)
+    kw_mean = Stat.mean(keyword_sim_array)
+    kw_sd = Stat.standard_deviation(keyword_sim_array)
+    puts "dist"
+    puts dist_mean.to_s + " " + dist_sd.to_s
+    puts "keyword"
+    puts kw_mean.to_s + " " + kw_sd.to_s
     locations
   end
 end

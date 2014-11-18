@@ -15,6 +15,9 @@ class LocationProfile
   end
 
   def get_keyword_sim(target)
+    if weighted_keywords.length == 0 || target.weighted_keywords.length == 0
+      return 0.0
+    end
     sim = 0
     size = 0
     weighted_keywords.each do |keyword, weight|
@@ -23,14 +26,14 @@ class LocationProfile
         sim += weight * target.weighted_keywords[keyword]
       end
     end
-    sim /= target.keyword_size * size ** 2
+    sim /= target.keyword_size * size ** 0.5
     sim
   end
   
-  def get_distance_sim(target, alpha, beta)
+  def get_distance_sim(target, dist_limit, sim_limit)
     dist = gps.get_distance_from(target.gps)
-    if dist < beta - 1.0 / alpha
-      sim = alpha - 1.0 / (beta - dist)
+    if dist < dist_limit
+      sim = sim_limit * (1 - (dist / dist_limit) ** 2) ** 0.5
     else
       sim = 0
     end
