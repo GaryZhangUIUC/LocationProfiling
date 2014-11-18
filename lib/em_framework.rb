@@ -13,12 +13,10 @@ module EMFramework
   DIST_WEIGHT = 0.5
   KEYWORD_WEIGHT = 0.5
   def get_locations(center, l_radius)
-    locations = get_locations_by_distance(center, l_radius)
-    locations
+    get_locations_by_distance(center, l_radius)
   end
   def get_tweets(center, t_radius)
-    tweets = get_tweets_by_distance(center, t_radius)
-    tweets
+    get_tweets_by_distance(center, t_radius)
   end
 
   def init_lcoations(center, t_radius, l_radius)
@@ -62,9 +60,15 @@ module EMFramework
   def run(center, l_radius, t_radius, num_iter)
     locations = init_lcoations(center, t_radius, l_radius)
     tweets = get_tweets(center, t_radius)
+    locations_count = locations.length
+    tweets_count = tweets.length
+    p "#{locations_count} locations, #{tweets_count} tweets"
     for iter_num in 1..num_iter
+      p "Iteration #{iter_num}"
       locations = bind_tweets(tweets, locations)
+      p "#{iter_num}.bine_tweets"
       locations = update_location(locations)
+      p "#{iter_num}.update_location"
     end
     locations
   end
