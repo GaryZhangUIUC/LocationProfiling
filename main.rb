@@ -5,7 +5,7 @@ include EMFramework
 require 'yaml'
 
 gps = GPS.new(-88.2269172, 40.1124997)
-locations = EMFramework.run(gps, 3000, 60, 2)
+locations = EMFramework.run(gps, 300, 300, 2)
 # open output.yaml to see location objects 
 File.open("./data/output.yaml", "w") { |file| file.write(YAML.dump(locations)) }
 # print out top 10 keywords for a location

@@ -58,7 +58,7 @@ module EMFramework
     loc_set
   end
   def run(center, l_radius, t_radius, num_iter)
-    locations = init_lcoations(center, t_radius, l_radius)
+    locations = init_lcoations(center, 60, l_radius)
     tweets = get_tweets(center, t_radius)
     locations_count = locations.length
     tweets_count = tweets.length
