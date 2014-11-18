@@ -12,7 +12,7 @@ class GPS
     lon1 = lon
     lat2 = target.lat
     lon2 = target.lon
-    include Math
+    
     lat_diff = (lat1 - lat2) * PI / 180.0
     lon_diff = (lon1 - lon2) * PI / 180.0
     lat_sin = Math.sin(lat_diff / 2.0) ** 2

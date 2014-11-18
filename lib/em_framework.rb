@@ -1,4 +1,11 @@
 #!/usr/bin/ruby
+require_relative "./db_accessor"
+require_relative './tfidf'
+require_relative './tweet'
+require_relative './gps'
+require_relative './location_profile'
+include DB
+
 
 module EMFramework
   DIST_ALPHA = 1.0
@@ -6,9 +13,25 @@ module EMFramework
   DIST_WEIGHT = 0.5
   KEYWORD_WEIGHT = 0.5
   def get_locations(center, l_radius)
+    locations = get_locations_by_distance(center, l_radius)
+    p locations
+    locations
   end
   def get_tweets(center, t_radius)
+    tweets = get_tweets_by_distance(center, t_radius)
+    p tweets
+    tweets
   end
+
+  def init_lcoations(center, t_radius, l_radius)
+    locations = get_locations(center, l_radius)
+    locations.each do |location|
+      tweets = get_tweets(center, t_radius)
+      location.weighted_tweets = tweets.map { |tweet| [tweet, 1] }
+    end
+    update_location(locations)
+  end
+  
   def bind_tweets(tweets, loc_set, dist_weight=DIST_WEIGHT, keyword_weight=KEYWORD_WEIGHT)
     loc_set.each do |location|
       location.weighted_tweets = []
@@ -32,9 +55,14 @@ module EMFramework
     loc_set
   end
   def update_location(loc_set)
+    tfidf = TfIdf.new(loc_set)
+    loc_set.each do |location|
+      location.weighted_keywords(tfidf.tf_idf[location.l_id])
+    end
+    loc_set
   end
   def run(center, l_radius, t_radius, num_iter)
-    locations = get_locations(center, l_radius)
+    locations = init_lcoations(center, t_radius, l_radius)
     tweets = get_tweets(center, t_radius)
     for iter_num in 1..num_iter
       locations = bind_tweets(tweets, locations)

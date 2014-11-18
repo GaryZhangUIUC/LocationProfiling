@@ -1,4 +1,6 @@
-require './tweet_words'
+require_relative './tweet_words'
+include TweetWords
+
 class TfIdf
 	attr_accessor :tf
 	attr_accessor :idf
@@ -15,7 +17,7 @@ class TfIdf
 	end
 	
 	private
-	def calc_tfidf
+	def calc_tfidf(locations)
 		locations.each do |location|
 			l_tf = @tf[l_id]
 			l_id = location.l_id
@@ -23,10 +25,10 @@ class TfIdf
 			location_words = []
 			location.tweets.each do |tweet|
 				tweet_words = []
-				TweetWords.clean_up(tweet.text).each do |word|
+				TweetWords.clean_up(tweet[0].text).each do |word|
 					# if this word already appeared in the tweet, do not count again
 					unless tweet_words.include?(word)
-						l_tf.has_key?(word) ? l_tf[word]+=1 : l_tf[word] = 1
+						l_tf.has_key?(word) ? l_tf[word]+=tweet[1] : l_tf[word] = tweet[1]
 						tweet_words<<word
 					end
 					unless location_words.include?(word)

@@ -1,5 +1,7 @@
 #!/usr/bin/ruby
-require "tweet_words"
+require_relative "./tweet_words"
+include TweetWords
+
 class Tweet
   attr_reader :t_id
   attr_reader :u_id

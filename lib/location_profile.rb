@@ -10,10 +10,10 @@ class LocationProfile
     @l_id = l_id
     @l_name = l_name
     @gps = gps
-    @weighted_keywords = weighted_keywords
-    @weighted_tweets = weighted_tweets
-
+    @weighted_keywords = nil
+    @weighted_tweets = nil
   end
+
   def get_keyword_sim(target)
     sim = 0
     size = 0
@@ -26,6 +26,7 @@ class LocationProfile
     sim /= target.keyword_size * size ** 2
     sim
   end
+  
   def get_distance_sim(target, alpha, beta)
     dist = gps.get_distance_from(target.gps)
     if dist < beta - 1.0 / alpha
