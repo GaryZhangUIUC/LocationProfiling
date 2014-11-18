@@ -19,11 +19,11 @@ class TfIdf
 	private
 	def calc_tfidf(locations)
 		locations.each do |location|
-			l_tf = @tf[l_id]
 			l_id = location.l_id
-			l_tf = {}
+			@tf[l_id] = {}
+			l_tf = @tf[l_id]
 			location_words = []
-			location.tweets.each do |tweet|
+			location.weighted_tweets.each do |tweet|
 				tweet_words = []
 				TweetWords.clean_up(tweet[0].text).each do |word|
 					# if this word already appeared in the tweet, do not count again
@@ -32,7 +32,7 @@ class TfIdf
 						tweet_words<<word
 					end
 					unless location_words.include?(word)
-						@df.has_key?(word) ? @tf[word]+=1 : @tf[word] = 1
+						@df.has_key?(word) ? @df[word]+=1 : @df[word] = 1
 						location_words<<word
 					end
 				end
@@ -44,18 +44,17 @@ class TfIdf
 
 	def gen_idf
 		@df.each do |word, df|
-			@idf[word] = 1 + log(@locations_count / (df + 1.0))
+			@idf[word] = 1 + Math.log(@locations_count / (df + 1.0))
 		end
 	end
 
 	def gen_tfidf
 		@tf.each do |l_id, tfs|
+			@tf_idf[l_id] = {}
 			l_tf_idf = @tf_idf[l_id]
 			tfs.each do |word, tf|
-				l_tf_idf[word] = tf*@df[word]
+				l_tf_idf[word] = tf*@idf[word]
 			end
 		end
 	end
-
-
 end

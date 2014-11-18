@@ -1,7 +1,7 @@
 module TweetWords
 	def clean_up(str)
 		stop_words = []
-		f = File.open('../data/stopWords.txt', 'r')
+		f = File.open('./data/stopWords.txt', 'r')
 		f.each_line do |line|
 		  stop_words<<line.strip
 		end	

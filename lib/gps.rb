@@ -3,9 +3,10 @@
 class GPS
   attr_reader :lon
   attr_reader :lat
+  PI = 3.1415926
   def initialize(lon, lat)
-    @lon = lon
-    @lat = lat
+    @lon = lon.to_f
+    @lat = lat.to_f
   end
   def get_distance_from(target)
     lat1 = lat

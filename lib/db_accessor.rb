@@ -32,7 +32,7 @@ module DB
 		tweets = []
 		rs.each_hash { |h| 
 			gps = GPS.new(h['lon'], h['lat'])
-			tweets<<Tweet.new(h['tweetid'], h['userid'], h['text'], gps, Time.at(h['created']))
+			tweets<<Tweet.new(h['tweetid'], h['userid'], h['text'], gps, Time.at(h['created'].to_i))
 		}
 		tweets
 	end

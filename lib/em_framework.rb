@@ -5,7 +5,7 @@ require_relative './tweet'
 require_relative './gps'
 require_relative './location_profile'
 include DB
-
+require 'pp'
 
 module EMFramework
   DIST_ALPHA = 1.0
@@ -14,12 +14,10 @@ module EMFramework
   KEYWORD_WEIGHT = 0.5
   def get_locations(center, l_radius)
     locations = get_locations_by_distance(center, l_radius)
-    p locations
     locations
   end
   def get_tweets(center, t_radius)
     tweets = get_tweets_by_distance(center, t_radius)
-    p tweets
     tweets
   end
 
@@ -57,7 +55,7 @@ module EMFramework
   def update_location(loc_set)
     tfidf = TfIdf.new(loc_set)
     loc_set.each do |location|
-      location.weighted_keywords(tfidf.tf_idf[location.l_id])
+      location.weighted_keywords = tfidf.tf_idf[location.l_id]
     end
     loc_set
   end

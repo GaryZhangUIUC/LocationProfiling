@@ -36,4 +36,9 @@ class LocationProfile
     end
     sim
   end
+
+  # return top_n keywords for location
+  def get_keywords(top_n)
+    @weighted_keywords.sort_by {|_key, value| value}.reverse[1..top_n]
+  end
 end
