@@ -15,12 +15,10 @@ module EMFramework
   DIST_WEIGHT = 0.05
   KEYWORD_WEIGHT = 1
   def get_locations(center, l_radius)
-    locations = get_locations_by_distance(center, l_radius)
-    locations
+    get_locations_by_distance(center, l_radius)
   end
   def get_tweets(center, t_radius)
-    tweets = get_tweets_by_distance(center, t_radius)
-    tweets
+    get_tweets_by_distance(center, t_radius)
   end
 
   def init_lcoations(center, t_radius, l_radius)
@@ -68,9 +66,15 @@ module EMFramework
     keyword_sim_array = []
     locations = init_lcoations(center, t_radius, l_radius)
     tweets = get_tweets(center, t_radius)
+    locations_count = locations.length
+    tweets_count = tweets.length
+    p "#{locations_count} locations, #{tweets_count} tweets"
     for iter_num in 1..num_iter
+      p "Iteration #{iter_num}"
       locations = bind_tweets(dist_sim_array, keyword_sim_array, tweets, locations)
+      p "#{iter_num}.bine_tweets"
       locations = update_location(locations)
+      p "#{iter_num}.update_location"
     end
     dist_mean = Stat.mean(dist_sim_array)
     dist_sd = Stat.standard_deviation(dist_sim_array)
