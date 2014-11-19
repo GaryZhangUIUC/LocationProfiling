@@ -64,7 +64,7 @@ module EMFramework
   def run(center, l_radius, t_radius, num_iter)
     dist_sim_array = []
     keyword_sim_array = []
-    locations = init_lcoations(center, t_radius, l_radius)
+    locations = init_lcoations(center, 60, l_radius)
     tweets = get_tweets(center, t_radius)
     locations_count = locations.length
     tweets_count = tweets.length
@@ -72,9 +72,9 @@ module EMFramework
     for iter_num in 1..num_iter
       p "Iteration #{iter_num}"
       locations = bind_tweets(dist_sim_array, keyword_sim_array, tweets, locations)
-      p "#{iter_num}.bine_tweets"
+      p "#{iter_num}.bind_tweets"
       locations = update_location(locations)
-      p "#{iter_num}.update_location"
+      p "#{iter_num}.update_locations"
     end
     dist_mean = Stat.mean(dist_sim_array)
     dist_sd = Stat.standard_deviation(dist_sim_array)
