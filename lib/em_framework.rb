@@ -12,8 +12,8 @@ require 'pp'
 module EMFramework
   DISTSIM_DIST_LIMIT = 1000.0
   DISTSIM_SIM_LIMIT = 1.0
-  DIST_WEIGHT = 0.05
-  KEYWORD_WEIGHT = 1
+  DIST_WEIGHT = 1
+  KEYWORD_WEIGHT = 4
   def get_locations(center, l_radius)
     get_locations_by_distance(center, l_radius)
   end
@@ -40,8 +40,12 @@ module EMFramework
       loc_set.each do |location|
         keyword_sim = location.get_keyword_sim(tweet)
         dist_sim = location.get_distance_sim(tweet, DISTSIM_DIST_LIMIT, DISTSIM_SIM_LIMIT)
-        dist_sim_array.push(dist_sim * dist_weight)
-        keyword_sim_array.push(keyword_sim * keyword_weight)
+        if dist_sim != 0
+          dist_sim_array.push(dist_sim * dist_weight)
+        end
+        if keyword_sim != 0
+          keyword_sim_array.push(keyword_sim * keyword_weight)
+        end
         sim = keyword_sim * keyword_weight + dist_sim * dist_weight
         if sim > max_sim
           max_sim = sim
@@ -80,10 +84,14 @@ module EMFramework
     dist_sd = Stat.standard_deviation(dist_sim_array)
     kw_mean = Stat.mean(keyword_sim_array)
     kw_sd = Stat.standard_deviation(keyword_sim_array)
+    stat_file = File.open("data/data_stat", 'w')
+    keyword_sim_array.each do |keyword_sim|
+      stat_file.write(keyword_sim.to_s + "\t" + (keyword_sim/0.01).ceil.to_s + "\n")
+    end
     puts "dist"
-    puts dist_mean.to_s + " " + dist_sd.to_s
+    puts dist_mean.to_s + " " + dist_sd.to_s + " " + dist_sim_array.max.to_s
     puts "keyword"
-    puts kw_mean.to_s + " " + kw_sd.to_s
+    puts kw_mean.to_s + " " + kw_sd.to_s + " " + keyword_sim_array.max.to_s
     locations
   end
 end
