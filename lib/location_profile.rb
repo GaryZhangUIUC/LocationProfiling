@@ -1,6 +1,10 @@
 #/usr/bin/ruby
 
 class LocationProfile
+  DIST_FULL_BOUND = 1
+  DIST_HALF_BOUND = 2
+  DIST_QUAR_BOUND = 5
+
   attr_reader :l_id
   attr_reader :l_name
   attr_reader :gps
@@ -10,8 +14,8 @@ class LocationProfile
     @l_id = l_id
     @l_name = l_name
     @gps = gps
-    @weighted_keywords = nil
-    @weighted_tweets = nil
+    @weighted_keywords = []
+    @weighted_tweets = []
   end
 
   def get_keyword_sim(target)
@@ -28,6 +32,19 @@ class LocationProfile
     end
     sim /= target.keyword_size * size ** 0.5
     sim
+  end
+
+  def get_dist_weight(target, radius)
+    dist = gps.get_distance_from(target.gps)
+    if dist <= DIST_FULL_BOUND * radius
+      return 1.0
+    elsif dist <= DIST_HALF_BOUND * radius
+      return 0.5
+    elsif dist <= DIST_QUAR_BOUND * radius
+      return 0.25
+    else
+      return 0
+    end
   end
   
   def get_distance_sim(target, dist_limit, sim_limit)
