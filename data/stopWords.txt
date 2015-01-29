@@ -744,3 +744,4 @@ illini
 uiuc
 university
 campus
+fucked

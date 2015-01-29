@@ -17,8 +17,9 @@ class TfIdf
 	end
 	
 	private
-	def calc_tfidf(locations)
+	def calc_tfidf(locations, threshold = 0)
 		locations.each do |location|
+			tweets_count = location.weighted_tweets.length
 			l_id = location.l_id
 			@tf[l_id] = {}
 			l_tf = @tf[l_id]
@@ -36,6 +37,9 @@ class TfIdf
 						location_words<<word
 					end
 				end
+			end
+			l_tf.each do |word, tf|
+				l_tf[word] = 0 if tf<=2 #(tf*1.0)/tweets_count < threshold
 			end
 		end
 		gen_idf()
@@ -56,5 +60,9 @@ class TfIdf
 				l_tf_idf[word] = tf*@idf[word]
 			end
 		end
+	end
+
+	def method_name
+		
 	end
 end

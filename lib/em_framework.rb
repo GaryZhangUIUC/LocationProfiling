@@ -67,7 +67,7 @@ module EMFramework
 
   def run(center, l_radius, t_radius, num_iter)
     locations = get_locations(center, l_radius)
-    locations = init_lcoations(locations, 40)
+    locations = init_lcoations(locations, 100)
     tweets = get_tweets(center, t_radius)
     locations_count = locations.length
     tweets_count = tweets.length
@@ -76,7 +76,7 @@ module EMFramework
     for iter_num in 1..num_iter
       p "Iteration #{iter_num}"
       p "#{iter_num}.bind_tweets"
-      locations = bind_tweets(tweets, locations)
+      # locations = bind_tweets(tweets, locations)
       p "#{iter_num}.update_locations"
       locations = update_location(locations)
     end
